@@ -1,16 +1,23 @@
-# todoer README
+# Todoer
 
-This is the README for your extension "todoer". After writing up a brief description, we recommend including the following sections.
+A vscode extension to help with handling simple markdown checklists. Hopefully compatible with Dendron.
 
-## Features
+<!-- Badges once we get something -->
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+## Hopeful Features
 
-For example if there is an image subfolder under your extension project workspace:
+Going to turn these into github issues at some point soon.
 
-\!\[feature X\]\(images/feature-x.png\)
+- All features should keep in the mind flexibility with settings(i.e. ) and compatibility with Dendron
+- Ability to create a todo with a shortcut, will toggle if pressed again
+- Ability to mark a todo as complete with a shortcut, will toggle if pressed again
+- Ability to add a start time to a todo with a shortcut
+- Ability to add a end time with a duration when the todo is completed and it has a start time
+- Ability to pause a todo, which should keep when it was started, add a pause notation, and a duration of time so far
+- Ability to archive completed tasks in the same file
+- Ability to archive completed tasks to another file
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+Dendron tags can be used for importance/priority.
 
 ## Requirements
 
@@ -24,47 +31,36 @@ For example:
 
 This extension contributes the following settings:
 
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
+- `myExtension.enable`: enable/disable this extension
+- `myExtension.thing`: set to `blah` to do something
 
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+See Github Issues. Please do a search before submitting an issue to check for duplicates.
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
+See [Changelog](./CHANGELOG.md)
 
 -----------------------------------------------------------------------------------------------------------
+
 ## Following extension guidelines
 
 Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
 
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
+- [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
 
 ## Working with Markdown
 
 **Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
 
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
+- Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
+- Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
+- Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
 
 ### For more information
 
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
+- [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
+- [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
 
 **Enjoy!**
