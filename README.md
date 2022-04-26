@@ -2,7 +2,10 @@
 
 A vscode extension to help with handling simple markdown checklists. Hopefully compatible with Dendron.
 
-<!-- Badges once we get something -->
+![GitHub contributors](https://img.shields.io/github/contributors/BoarCore/Todoer?style=flat-square)
+![GitHub top language](https://img.shields.io/github/languages/top/BoarCore/Todoer?style=flat-square)
+![Open Issues](https://img.shields.io/github/issues-raw/BoarCore/Todoer?style=flat-square)
+<!-- Build/Test Badges once we get something -->
 
 ## Hopeful Features
 
@@ -24,6 +27,8 @@ Dendron tags can be used for importance/priority.
 If you have any requirements or dependencies, add a section describing those and how to install and configure them.
 
 ## Extension Settings
+
+TODO: Include extension settings and documentation
 
 Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
 
