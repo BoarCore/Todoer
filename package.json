@@ -17,7 +17,16 @@
     "commands": [
       {
         "command": "todoer.toggleTask",
-        "title": "Toggle Task"
+        "title": "Toggle Task",
+        "category": "Todoer"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "todoer.toggleTask",
+        "key": "alt+c",
+        "mac": "alt+c",
+        "when": "editorTextFocus"
       }
     ]
   },
