@@ -40,6 +40,7 @@ export function activate(context: vscode.ExtensionContext) {
     // The code you place here will be executed every time your command is executed
     // Display a message box to the user
 
+	// TODO: add shortcut for toggle task
     const editor = vscode.window.activeTextEditor;
     if (!editor) {
       logger.appendLine("No Editor Found.");
