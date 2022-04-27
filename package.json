@@ -23,10 +23,8 @@
     ],
     "keybindings": [
       {
-        "command": "todoer.toggleTask",
-        "key": "alt+c",
-        "mac": "alt+c",
-        "when": "editorTextFocus"
+        "command": "todoer.toggleTask",           "when": "editorTextFocus",
+        "key": "alt+c",                           "mac": "alt+c"
       }
     ]
   },
