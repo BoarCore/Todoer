@@ -63,15 +63,44 @@ export function activate(context: vscode.ExtensionContext) {
         );
       }
     } else {
-      // TODO: If any lines start with "- [ ] " then remove it from all lines (Do not add in this case).
       logger.appendLine("Detected: Multiple Lines");
-      editor.edit((edit) => {
-        for (var i = selection.start.line; i <= selection.end.line; i = i + 1) {
-          logger.appendLine("Line: " + i.toString());
-          const line = new vscode.Position(i, 0);
-          edit.insert(line, "- [ ] ");
-        }
-      });
+      const regex = /^- \[ \]/m;
+
+      const text = editor.document.getText(
+        new vscode.Range(selection.start, selection.end)
+      );
+
+      if (regex.test(text)) {
+        logger.appendLine("Detected: Existing Todo(s). Removing.");
+        editor.edit((edit) => {
+          for (
+            var i = selection.start.line;
+            i <= selection.end.line;
+            i = i + 1
+          ) {
+            var line = editor.document.lineAt(i).text;
+            if (line.startsWith("- [ ] ")) {
+              logger.appendLine("Removing Line: " + i.toString());
+              const start = new vscode.Position(i, 0);
+              const end = new vscode.Position(i, 6);
+              edit.delete(new vscode.Range(start, end));
+            }
+          }
+        });
+      } else {
+        logger.appendLine("Detected: No Todo(s). Adding.");
+        editor.edit((edit) => {
+          for (
+            var i = selection.start.line;
+            i <= selection.end.line;
+            i = i + 1
+          ) {
+            logger.appendLine("Adding Line: " + i.toString());
+            const line = new vscode.Position(i, 0);
+            edit.insert(line, "- [ ] ");
+          }
+        });
+      }
     }
     logger.appendLine("Success, added todo");
   });
