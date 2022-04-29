@@ -10,14 +10,21 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:todoer.helloWorld"
+    "onCommand:todoer.toggleTask"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "todoer.helloWorld",
-        "title": "Hello World"
+        "command": "todoer.toggleTask",
+        "title": "Toggle Task",
+        "category": "Todoer"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "todoer.toggleTask",           "when": "editorTextFocus",
+        "key": "alt+c",                           "mac": "alt+c"
       }
     ]
   },
@@ -43,5 +50,8 @@
     "mocha": "^9.2.2",
     "prettier": "^2.6.2",
     "typescript": "^4.5.5"
+  },
+  "dependencies": {
+    "winston": "^3.7.2"
   }
 }
