@@ -14,9 +14,13 @@ Going to turn these into github issues at some point soon.
 - [x] ~~Ability to mark a todo as complete with a shortcut, will toggle.~~
 - [ ] Ability to add a start time to a todo with a shortcut
 - [ ] Ability to add a end time with a duration when the todo is completed and it has a start time
-- [ ] Ability to pause a todo, which should keep when it was started, add a pause notation, and a duration of time so far
+- [ ] Ability to pause a todo
+  - should keep when started
+  - add pause notation
+  - keep duration of total time
 - [ ] Ability to archive completed tasks in the same file
 - [ ] Ability to archive completed tasks to another file
+- [ ] Possibly update frontmatter with total elapsed time in the document
 
 Dendron tags can be used for importance/priority.
 
