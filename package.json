@@ -10,7 +10,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:todoer.toggleTask"
+    "onCommand:todoer.toggleTask",
+    "onCommand:todoer.toggleDone"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -19,12 +20,21 @@
         "command": "todoer.toggleTask",
         "title": "Toggle Task",
         "category": "Todoer"
+      },
+      {
+        "command": "todoer.toggleDone",
+        "title": "Toggle Done",
+        "category": "Todoer"
       }
     ],
     "keybindings": [
       {
         "command": "todoer.toggleTask",           "when": "editorTextFocus",
         "key": "alt+c",                           "mac": "alt+c"
+      },
+      {
+        "command": "todoer.toggleDone",           "when": "editorTextFocus",
+        "key": "alt+d",                           "mac": "alt+d"
       }
     ]
   },
