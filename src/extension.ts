@@ -64,14 +64,36 @@ export function activate(context: vscode.ExtensionContext) {
       }
     } else {
       logger.appendLine("Detected: Multiple Lines");
-      const regex = /^- \[ \]/m;
+      const regex = /^- \[ \]/;
 
-      const text = editor.document.getText(
-        new vscode.Range(selection.start, selection.end)
-      );
+      // TODO: This could be optimized using a multi line regex.
+      var hasAllTodos = true;
+      for (var i = selection.start.line; i <= selection.end.line; i = i + 1) {
+        var line = editor.document.lineAt(i).text;
+        if (!line.startsWith("- [ ] ")) {
+          hasAllTodos = false;
+          break;
+        }
+      }
 
-      if (regex.test(text)) {
-        logger.appendLine("Detected: Existing Todo(s). Removing.");
+      if (hasAllTodos) {
+        // Remove
+        logger.appendLine("Detected: All Selected Lines are Todos. Removing.");
+        editor.edit((edit) => {
+          for (
+            var i = selection.start.line;
+            i <= selection.end.line;
+            i = i + 1
+          ) {
+            logger.appendLine("Removing Line: " + i.toString());
+            const start = new vscode.Position(i, 0);
+            const end = new vscode.Position(i, 6);
+            edit.delete(new vscode.Range(start, end));
+          }
+        });
+      } else {
+        // Add
+        logger.appendLine("Detected: Lines with no Todos. Adding.");
         editor.edit((edit) => {
           for (
             var i = selection.start.line;
@@ -79,25 +101,11 @@ export function activate(context: vscode.ExtensionContext) {
             i = i + 1
           ) {
             var line = editor.document.lineAt(i).text;
-            if (line.startsWith("- [ ] ")) {
-              logger.appendLine("Removing Line: " + i.toString());
-              const start = new vscode.Position(i, 0);
-              const end = new vscode.Position(i, 6);
-              edit.delete(new vscode.Range(start, end));
+            if (!line.startsWith("- [ ] ")) {
+              logger.appendLine("Adding Line: " + i.toString());
+              const line = new vscode.Position(i, 0);
+              edit.insert(line, "- [ ] ");
             }
-          }
-        });
-      } else {
-        logger.appendLine("Detected: No Todo(s). Adding.");
-        editor.edit((edit) => {
-          for (
-            var i = selection.start.line;
-            i <= selection.end.line;
-            i = i + 1
-          ) {
-            logger.appendLine("Adding Line: " + i.toString());
-            const line = new vscode.Position(i, 0);
-            edit.insert(line, "- [ ] ");
           }
         });
       }
