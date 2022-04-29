@@ -83,6 +83,7 @@ export function activate(context: vscode.ExtensionContext) {
       var hasAllTodos = true;
       for (var i = selection.start.line; i <= selection.end.line; i = i + 1) {
         var line = editor.document.lineAt(i).text;
+        if (line.startsWith(DONE_TEXT)) continue;
         if (!line.startsWith(TODO_TEXT)) {
           hasAllTodos = false;
           break;
@@ -98,6 +99,9 @@ export function activate(context: vscode.ExtensionContext) {
             i <= selection.end.line;
             i = i + 1
           ) {
+            var {text} = editor.document.lineAt(i)
+            if(text.startsWith(DONE_TEXT)) continue;
+
             logger.appendLine("Removing Line: " + i.toString());
             const start = new vscode.Position(i, 0);
             const end = new vscode.Position(i, 6);
@@ -113,7 +117,9 @@ export function activate(context: vscode.ExtensionContext) {
             i <= selection.end.line;
             i = i + 1
           ) {
+
             var line = editor.document.lineAt(i).text;
+            if(line.startsWith(DONE_TEXT)) continue;
             if (!line.startsWith(TODO_TEXT)) {
               logger.appendLine("Adding Line: " + i.toString());
               const line = new vscode.Position(i, 0);
