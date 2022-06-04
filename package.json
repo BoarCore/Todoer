@@ -42,10 +42,12 @@
     "watch": "tsc --watch",
     "fmt": "prettier --write src/ test/",
     "clean": "rm -rf out/",
-
     "lint": "eslint --ext ts src/ test/",
-    "compile": "npm run lint && tsc",
-    "test": "npm run compile && node ./out/test/acceptance/runTest.js"
+
+    "compile": "tsc",
+    "test": "npm run compile && npm run test:unit && npm run test:acceptance",
+    "test:unit": "mocha out/test/unit/**/*.js",
+    "test:acceptance": "node ./out/test/acceptance/runTest.js"
   },
   "devDependencies": {
     "@types/glob": "^7.2.0",
