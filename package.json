@@ -39,13 +39,13 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc",
     "watch": "tsc --watch",
-    "pretest": "npm run compile && npm run lint",
+    "fmt": "prettier --write src/ test/",
+    "clean": "rm -rf out/",
+
     "lint": "eslint --ext ts src/ test/",
-    "test": "node ./out/test/acceptance/runTest.js",
-    "fmt": "prettier --write src/ test/"
+    "compile": "npm run lint && tsc",
+    "test": "npm run compile && node ./out/test/acceptance/runTest.js"
   },
   "devDependencies": {
     "@types/glob": "^7.2.0",
