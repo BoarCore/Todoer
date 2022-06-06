@@ -1,6 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
+import * as todoer from "./core/todoer";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -61,81 +62,17 @@ export function activate(context: vscode.ExtensionContext) {
       return;
     }
 
-    const selection = getSelection(editor);
-    if (selection.isSingleLine) {
-      logger.appendLine("Detected: Single Line");
+    // Get all text from selected lines
+    const selection = editor.selection;
+    const document = editor.document;
+    const startPos = document.lineAt(selection.start).range.start;
+    const endPos = document.lineAt(selection.end).range.end;
+    const range = new vscode.Range(startPos, endPos);
+    const text = document.getText(range);
 
-      const { text } = editor.document.lineAt(selection.active.line);
-      if (text.startsWith(TODO_TEXT)) {
-        logger.appendLine("Detected: Existing Todo. Removing.");
-        const start = new vscode.Position(selection.active.line, 0);
-        const end = new vscode.Position(selection.active.line, 6);
-        editor.edit((edit) => edit.delete(new vscode.Range(start, end)));
-      } else {
-        logger.appendLine("Detected: No Existing Todo. Adding.");
-        editor.edit((edit) =>
-          edit.insert(new vscode.Position(selection.active.line, 0), TODO_TEXT)
-        );
-      }
-    } else {
-      logger.appendLine("Detected: Multiple Lines");
-      const regex = /^- \[ \]/;
+    const toggledTasks = todoer.toggleTasks(text);
 
-      // TODO: This could be optimized using a multi line regex.
-      var hasAllTodos = true;
-      for (var i = selection.start.line; i <= selection.end.line; i = i + 1) {
-        var line = editor.document.lineAt(i).text;
-        if (line.startsWith(DONE_TEXT)) {
-          continue;
-        }
-        if (!line.startsWith(TODO_TEXT)) {
-          hasAllTodos = false;
-          break;
-        }
-      }
-
-      if (hasAllTodos) {
-        // Remove
-        logger.appendLine("Detected: All Selected Lines are Todos. Removing.");
-        editor.edit((edit) => {
-          for (
-            var i = selection.start.line;
-            i <= selection.end.line;
-            i = i + 1
-          ) {
-            var { text } = editor.document.lineAt(i);
-            if (text.startsWith(DONE_TEXT)) {
-              continue;
-            }
-            logger.appendLine("Removing Line: " + i.toString());
-            const start = new vscode.Position(i, 0);
-            const end = new vscode.Position(i, 6);
-            edit.delete(new vscode.Range(start, end));
-          }
-        });
-      } else {
-        // Add
-        logger.appendLine("Detected: Lines with no Todos. Adding.");
-        editor.edit((edit) => {
-          for (
-            var i = selection.start.line;
-            i <= selection.end.line;
-            i = i + 1
-          ) {
-            var line = editor.document.lineAt(i).text;
-            if (line.startsWith(DONE_TEXT)) {
-              continue;
-            }
-            if (!line.startsWith(TODO_TEXT)) {
-              logger.appendLine("Adding Line: " + i.toString());
-              const line = new vscode.Position(i, 0);
-              edit.insert(line, TODO_TEXT);
-            }
-          }
-        });
-      }
-    }
-    logger.appendLine("Success, added todo");
+    editor.edit((edit) => edit.replace(range, toggledTasks));
   });
 
   let toggleDone = vscode.commands.registerCommand("todoer.toggleDone", () => {
