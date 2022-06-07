@@ -56,6 +56,7 @@ describe("Toggling Task Completion", () => {
       "- [ ]Go shopping",
       "- [x] ~nope~~",
       "- [x] ~~nope~",
+      "- [x] nope",
     ];
 
     for (const input of notTodos) {
