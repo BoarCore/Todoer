@@ -70,7 +70,7 @@ export function activate(context: vscode.ExtensionContext) {
     const range = new vscode.Range(startPos, endPos);
     const text = document.getText(range);
 
-    const toggledTasks = todoer.toggleTasks(text);
+    const toggledTasks = todoer.toggleTask(text);
 
     editor.edit((edit) => edit.replace(range, toggledTasks));
   });
@@ -83,52 +83,17 @@ export function activate(context: vscode.ExtensionContext) {
       return;
     }
 
-    const selection = getSelection(editor);
-    const line = selection.active.line;
-    const lineText = editor.document.lineAt(line).text;
-    if (lineText.startsWith(TODO_TEXT)) {
-      logger.appendLine(`Detected: Not Done. Marking as Done.`);
-      editor.edit((edit) => {
-        edit.replace(
-          new vscode.Range(
-            new vscode.Position(line, 3),
-            new vscode.Position(line, 4)
-          ),
-          "x"
-        );
-        edit.insert(new vscode.Position(line, 6), "~~");
-        edit.insert(new vscode.Position(line, lineText.length), "~~");
-      });
-    } else if (lineText.startsWith(DONE_TEXT)) {
-      logger.appendLine(`Detected: Done. Removing.`);
-      editor.edit((edit) => {
-        if (lineText.startsWith(DONE_TEXT_WITH_STRIKE)) {
-          edit.delete(
-            new vscode.Range(
-              new vscode.Position(line, 6),
-              new vscode.Position(line, 8)
-            )
-          );
-          var lastIndex = lineText.lastIndexOf("~~");
-          if (lastIndex > 8) {
-            edit.delete(
-              new vscode.Range(
-                new vscode.Position(line, lastIndex),
-                new vscode.Position(line, lastIndex + 2)
-              )
-            );
-          }
-        }
-        edit.replace(
-          new vscode.Range(
-            new vscode.Position(line, 3),
-            new vscode.Position(line, 4)
-          ),
-          " "
-        );
-      });
-    }
-    logger.appendLine(`Success todoer.toggleDone`);
+    // Get all text from selected lines
+    const selection = editor.selection;
+    const document = editor.document;
+    const startPos = document.lineAt(selection.start).range.start;
+    const endPos = document.lineAt(selection.end).range.end;
+    const range = new vscode.Range(startPos, endPos);
+    const text = document.getText(range);
+
+    const toggledTasks = todoer.toggleComplete(text);
+
+    editor.edit((edit) => edit.replace(range, toggledTasks));
   });
 
   context.subscriptions.push(disposable);
