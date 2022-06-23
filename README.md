@@ -64,7 +64,10 @@ All features should keep in the mind flexibility with settings(i.e. ) and compat
 
 When you clone the repo, configure your githooks path so that conventional hooks are enforced.
 
-`git config core.hooksPath .githooks`
+```bash
+chmod +x .githooks/commit-msg
+git config core.hooksPath .githooks
+```
 
 ## Release Notes
 

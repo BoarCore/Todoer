@@ -1,37 +1,51 @@
-config=commit-msg.config.json
+#!/usr/bin/env bash
 
-# Set Variables
-enabled=$(jq -r .enabled $config)
-revert=$(jq -r .revert $config)
-types=($(jq -r .types[] $config))
-min_length=$(jq -r .length.min $config)
-max_length=$(jq -r .length.max $config)
+# list of Conventional Commits types
+cc_types=("feat" "fix")
+default_types=("build" "chore" "ci" "docs" "${cc_types[@]}" "perf" "refactor" "revert" "style" "test")
+types=( "${cc_types[@]}" )
 
-if [[ ! -f $config || ! $enabled ]]; then
+if [ $# -eq 1 ]; then
+    types=( "${default_types[@]}" )
+else
+    # assume all args but the last are types
+    while [ $# -gt 1 ]; do
+        types+=( "$1" )
+        shift
+    done
+fi
+
+# the commit message file is the last remaining arg
+msg_file="$1"
+
+# join types with | to form regex ORs
+r_types="($(IFS='|'; echo "${types[*]}"))"
+# optional (scope)
+r_scope="(\([[:alnum:] \/-]+\))?"
+# optional breaking change indicator and colon delimiter
+r_delim='!?:'
+# subject line, body, footer
+r_subject=" [[:print:]].+"
+# the full regex pattern
+pattern="^$r_types$r_scope$r_delim$r_subject$"
+
+# Check if commit is conventional commit
+if grep -Eq "$pattern" "$msg_file"; then
     exit 0
 fi
 
-regexp="^("
-if $revert; then
-    regexp="${regexp}revert: )?(\w+)("
-fi
-
-for type in "${types[@]}"
-do
-    regexp="${regexp}$type|"
-done
-
-regexp="${regexp})(\(.+\)()?: "
-regexp="${regexp}.{$min_length,$max_length}$"
-
-msg=$(head -1 $1)
-
-if [[ ! $msg =~ $regexp ]]; then
-    echo -e "\n\e[1m\e[31m[INVALID COMMIT MESSAGE]"
-    echo -e "-------------------------\033[0m\e[0m"
-    echo -e "\e[1mValid types:\e[0m \e[34m${types[@]}\033[0m"
-    echo -e "\e[1mMax length (first line):\e[0m \e[34m$max_length\033[0m"
-    echo -e "\e[1mMin length (first line):\e[0m \e[34m$min_length\033[0m\n"
-
-    exit 1
-fi
+echo "[Commit message] $( cat "$msg_file" )"
+echo "
+Your commit message does not follow Conventional Commits formatting
+https://www.conventionalcommits.org/
+Conventional Commits start with one of the below types, followed by a colon,
+followed by the commit message:
+    $(IFS=' '; echo "${types[*]}")
+Example commit message adding a feature:
+    feat: implement new API
+Example commit message fixing an issue:
+    fix: remove infinite loop
+Optionally, include a scope in parentheses after the type for more context:
+    fix(account): remove infinite loop
+"
+exit 1
