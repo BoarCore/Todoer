@@ -5,13 +5,9 @@ describe("Cancelling a task", () => {
   describe("Should be able to cancel an incomplete task", () => {
     // prettier-ignore
     const theories = [
-      [ "- [ ] Go shopping", "- [ ] ~~Go shopping~~" ], 
-      [ "- [ ] ",            "- [ ] ~~~~"            ], 
-
+      [ "- [ ] Go shopping", "- [ ] ~~Go shopping~~" ],
       // With indentation
       [ "  - [ ] Go shopping", "  - [ ] ~~Go shopping~~" ], 
-      [ "  - [ ] ",            "  - [ ] ~~~~"            ],       
-
     ];
     test(theories);
   });
@@ -24,7 +20,6 @@ describe("Cancelling a task", () => {
       
       // With indentation
       [ "  - [ ] ~~Go shopping~~", "  - [ ] Go shopping" ],         
-      [ "  - [ ] ~~~~",            "  - [ ] "            ],        
     ];
     test(theories);
   });
@@ -33,6 +28,16 @@ describe("Cancelling a task", () => {
     // prettier-ignore
     const theories = [
       [ "- [x] Go shopping", "- [x] Go shopping" ],         
+    ];
+
+    test(theories);
+  });
+
+  describe("Should ignore empty tasks", () => {
+    // prettier-ignore
+    const theories = [
+      [ "- [ ] ",   "- [ ] "   ], 
+      [ "  - [ ] ", "  - [ ] " ],           
     ];
 
     test(theories);
@@ -84,7 +89,9 @@ describe("Cancelling a task", () => {
 
 function test(theories: Array<Array<string>>) {
   for (const [input, expected] of theories) {
-    it(`${JSON.stringify(input).padEnd(25, " ")} -> ${JSON.stringify(expected)}`, () => {
+    it(`${JSON.stringify(input).padEnd(25, " ")} -> ${JSON.stringify(
+      expected
+    )}`, () => {
       expect(todoer.toggleCancel(input)).to.be.equal(expected);
     });
   }
