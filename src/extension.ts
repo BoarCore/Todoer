@@ -70,7 +70,7 @@ export function activate(context: vscode.ExtensionContext) {
     const range = new vscode.Range(startPos, endPos);
     const text = document.getText(range);
 
-    const toggledTasks = todoer.toggleTasks(text);
+    const toggledTasks = todoer.toggleTask(text);
 
     editor.edit((edit) => edit.replace(range, toggledTasks));
   });

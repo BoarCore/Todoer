@@ -1,132 +1,149 @@
 import { expect } from "chai";
 import * as todoer from "../../src/core/todoer";
 
-describe("Toggling a Task", () => {
-  describe("Should toggle non-tasks to task", () => {
+describe("Creating a task", () => {
+  describe("Should toggle non-tasks into incomplete tasks", () => {
     // prettier-ignore
     const theories = [
-      [ "Go shopping",       "- [ ] Go shopping"    ],
-      [ " \tGo shopping\t ", "- [ ] Go shopping"    ],
-      [ "[] Go shopping",    "- [ ] [] Go shopping" ],
-      [ "",                  "- [ ] "               ],
-      [ "\t",                "- [ ] "               ],
-      [ " ",                 "- [ ] "               ],
-    ];
+        //  Obvious case       
+        [ "Go shopping", "- [ ] Go shopping" ],
+        [ "",            "- [ ] "            ],
 
-    for (const [input, expected] of theories) {
-      it(`Should toggle ${JSON.stringify(input)}`, () => {
-        const actual = todoer.toggleTasks(input);
-        expect(actual).to.be.equal(expected);
-      });
-    }
+        // Already has a "-" or a "[]"
+        [ "-Go shopping   ", "- [ ] Go shopping" ],
+        [ "- Go shopping",   "- [ ] Go shopping" ],
+        [ "-",               "- [ ] "            ],
+        [ "[]Go shopping\t", "- [ ] Go shopping" ],
+        [ "[]\t\t ",         "- [ ] "            ],
+        [ "[ ]Go shopping",  "- [ ] Go shopping" ],
+        [ "[ ] Go shopping", "- [ ] Go shopping" ],       
+
+        // Existing indentation
+        [ "  Go shopping",   "  - [ ] Go shopping" ],
+        [ "\t-Go shopping",  "\t- [ ] Go shopping" ],
+        [ "  ",              "  - [ ] "            ],
+        [ "\t[ ]",           "\t- [ ] "            ],
+        
+        //  Weird cases   
+        [ "- - Go shopping",       "- [ ] - Go shopping"     ],
+        [ "[ ] []Go shopping",     "- [ ] []Go shopping"     ],
+      ];
+    test(theories);
   });
 
-  describe("Should toggle incomplete tasks to non-tasks", () => {
+  describe("Should toggle an incomplete task into a non-task", () => {
     // prettier-ignore
     const theories = [
-      [ "- [ ] Go shopping",       "Go shopping"     ],
-      [ "- [ ] ~Go shopping~",     "~Go shopping~"   ],
-      [ "- [ ] Go ~~shopping~~",   "Go ~~shopping~~" ],
-      [ "- [ ] ~~Go shopping~~",   "~~Go shopping~~" ],
-      [ "- [ ] [ ] Go shopping",   "[ ] Go shopping" ],
-      [ "- [ ] \t Go shopping \t", "Go shopping"     ],
-      [ "- [ ] ",                  ""                ],
+      // Obvious cases
+      [ "- [ ] Go shopping",      "Go shopping" ],
+      [ "- [ ] ",                 ""            ],
+
+      // With indentation
+      [ "  - [ ] Go shopping", "  Go shopping" ],
+      [ "\t- [ ] Go shopping", "\tGo shopping" ],
+      [ "  - [ ] ",            "  "            ],
+      [ "\t- [ ] ",            "\t"            ],      
+
+      // Poorly formatted
+      [ "-[]Go shopping",   "Go shopping" ],
+      [ "- [] Go shopping", "Go shopping" ],
+      [ "-[]",              ""            ],
+      [ "- [] \t",          ""            ],       
+
+      //  Weird cases
+      [ "-[] - [ ] Go shopping", "- [ ] Go shopping" ],      
     ];
 
-    for (const [input, expected] of theories) {
-      it(`Should toggle ${JSON.stringify(input)}`, () => {
-        const actual = todoer.toggleTasks(input);
-        expect(actual).to.be.equal(expected);
-      });
-    }
+    test(theories);
   });
 
-  describe("Should toggle completed tasks to non-tasks", () => {
+  describe("Should ignore cancelled tasks", () => {
     // prettier-ignore
     const theories = [
-      [ "- [x] ~~Go shopping~~",       "Go shopping"     ],
-      [ "- [x] ~~Go ~~shopping~~~~",   "Go ~~shopping~~" ],
-      [ "- [x] ~~~Go shopping~~",      "~Go shopping"    ],
-      [ "- [x] ~~~~Go shopping~~~~",   "~~Go shopping~~" ],
-      [ "- [x] ~~[x] Go shopping~~",   "[x] Go shopping" ],
-      [ "- [x] ~~ \tGo shopping\t ~~", "Go shopping"     ],
-      [ "- [x]  \t~~Go shopping~~\t ", "Go shopping"     ],
-      [ "- [x] ~~~~",                  ""                ],
+      [ "- [ ] ~~Go shopping~~",   "- [ ] ~~Go shopping~~"   ],
+      [ "  -[] ~~Go shopping~~\t", "  -[] ~~Go shopping~~\t" ],
     ];
 
-    for (const [input, expected] of theories) {
-      it(`Should toggle ${JSON.stringify(input)}`, () => {
-        const actual = todoer.toggleTasks(input);
-        expect(actual).to.be.equal(expected);
-      });
-    }
+    test(theories);
   });
 
-  it("Should toggle multiple non-tasks to tasks", () => {
+  describe("Should ignore completed tasks", () => {
+    // prettier-ignore
+    const theories = [
+      [ "- [x] Go shopping",     "- [x] Go shopping"     ],
+      [ "-[ x ]  Go shopping\t", "-[ x ]  Go shopping\t" ],      
+    ];
+
+    test(theories);
+  });
+
+  it("Should toggle a mixture of non-tasks and incomplete tasks all to incomplete tasks", () => {
+    // Given some non-tasks
+    // And some incomplete tasks
+    // And some cancelled tasks
+    // And some complete tasks
     // prettier-ignore
     const input = 
-      "Go shopping\n" + 
-      "Go running\n" + 
-      "Do homework";
+      "Go shopping\n" +
+      "- [ ] Go Running\n" +
+      "-[] Go to school\n" +
+      "- [ ] ~~Eat candy~~\n" +
+      "- [x] Brush teeth\n" +
+      "";
 
+    // When I toggle them
+    const actual = todoer.toggleTask(input);
+
+    // Then all the non-tasks turn into incomplete tasks
+    // And the incomplete tasks stay as incomplete tasks
+    // And the cancelled tasks are ignored
+    // And the completed tasks are ignored
     // prettier-ignore
     const expected = 
-      "- [ ] Go shopping\n" + 
-      "- [ ] Go running\n" + 
-      "- [ ] Do homework";
+      "- [ ] Go shopping\n" +
+      "- [ ] Go Running\n" +
+      "-[] Go to school\n" +
+      "- [ ] ~~Eat candy~~\n" +
+      "- [x] Brush teeth\n" +
+      "- [ ] ";
 
-    const actual = todoer.toggleTasks(input);
     expect(actual).to.be.equal(expected);
   });
 
-  it("Should toggle multiple tasks to non-tasks", () => {
+  it("Should toggle a a mixture of incomplete tasks back to non-tasks", () => {
+    // Given some incomplete tasks
+    // And some cancelled tasks
+    // And some complete tasks
     // prettier-ignore
     const input = 
-      "- [ ] Go shopping\n" + 
-      "- [ ] Go running\n" + 
-      "- [ ] Do homework";
+      "- [ ] Go shopping\n" +
+      "-[] Wake up\n" +
+      "- [ ] ~~Eat candy~~\n" +
+      "- [x] Brush teeth\n" +
+      "- [ ] ";
 
+    // When I toggle them
+    const actual = todoer.toggleTask(input);
+
+    // Then all the incomplete tasks turn into non-tasks
+    // And the cancelled tasks are ignored
+    // And the completed tasks are ignored
     // prettier-ignore
     const expected = 
-      "Go shopping\n" + 
-      "Go running\n" + 
-      "Do homework";
+      "Go shopping\n" +
+      "Wake up\n" +
+      "- [ ] ~~Eat candy~~\n" +
+      "- [x] Brush teeth\n" +
+      "";
 
-    const actual = todoer.toggleTasks(input);
-    expect(actual).to.be.equal(expected);
-  });
-
-  it("Should toggle a mix of tasks and non-tasks to tasks", () => {
-    // prettier-ignore
-    const input = 
-      "Go shopping\n" + 
-      "- [ ] Go running\n" + 
-      "- [ ] Do homework";
-
-    // prettier-ignore
-    const expected = 
-      "- [ ] Go shopping\n" + 
-      "- [ ] Go running\n" + 
-      "- [ ] Do homework";
-
-    const actual = todoer.toggleTasks(input);
-    expect(actual).to.be.equal(expected);
-  });
-
-  it("Should toggle a mix of tasks and non-tasks to tasks, but ignore completed tasks", () => {
-    // prettier-ignore
-    const input = 
-      "Go shopping\n" + 
-      "- [x] ~~Go running~~\n" + 
-      "- [ ] Do homework";
-
-    // prettier-ignore
-    const expected = 
-      "- [ ] Go shopping\n" + 
-      "- [x] ~~Go running~~\n" + 
-      "- [ ] Do homework";
-
-    const actual = todoer.toggleTasks(input);
     expect(actual).to.be.equal(expected);
   });
 });
+
+function test(theories: Array<Array<string>>) {
+  for (const [input, expected] of theories) {
+    it(`${JSON.stringify(input).padEnd(25, " ")} -> ${JSON.stringify(expected)}`, () => {
+      expect(todoer.toggleTask(input)).to.be.equal(expected);
+    });
+  }
+}
