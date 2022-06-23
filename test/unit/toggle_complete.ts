@@ -7,25 +7,19 @@ describe("Completing a task", () => {
     const theories = [
       // Obvious cases
       [ "- [ ] Go shopping",      "- [x] Go shopping" ],
-      [ "- [ ] ",                 "- [x] "            ],
 
       // Extra space on the end
-      [ "- [ ] Go shopping \t",   "- [x] Go shopping" ],
-      [ "- [ ]  \t",              "- [x] "            ],      
+      [ "- [ ] Go shopping \t",   "- [x] Go shopping" ],     
 
       // With indentation
       [ "  - [ ] Go shopping", "  - [x] Go shopping" ],
       [ "\t- [ ] Go shopping", "\t- [x] Go shopping" ],
-      [ "  - [ ] ",            "  - [x] "            ],
-      [ "\t- [ ] ",            "\t- [x] "            ],
 
       // Extra and removed spaces
-      [ "-[] Go shopping",     "- [x] Go shopping"   ],
-      [ "-[   ]",              "- [x] "              ],         
+      [ "-[] Go shopping",     "- [x] Go shopping"   ],       
 
       // Weird cases
       [ "-[] [ ] Go shopping", "- [x] [ ] Go shopping" ],
-      [ "  -[]    -[]  ",       "  - [x] -[]"          ],
     ];
 
     test(theories);
@@ -50,11 +44,21 @@ describe("Completing a task", () => {
     test(theories);
   });
 
-  describe("Should ignore tasks that are cancelled", () => {
+  describe("Should ignore cancelled tasks", () => {
     // prettier-ignore
     const theories = [
       [ "- [ ] ~~Go shopping~~",   "- [ ] ~~Go shopping~~"   ],
       [ "  -[] ~~Go shopping~~\t", "  -[] ~~Go shopping~~\t" ],
+    ];
+
+    test(theories);
+  });
+
+  describe("Should ignore empty tasks", () => {
+    // prettier-ignore
+    const theories = [
+      [ "- [ ] ",   "- [ ] "   ],
+      [ "  - []",   "  - []"   ],
     ];
 
     test(theories);
@@ -109,7 +113,7 @@ describe("Completing a task", () => {
     // prettier-ignore
     const input = 
       "- [x] Go shopping\n" +
-      "-[x  ] Go Running\n" +
+      "- [x] Go Running\n" +
       "Brush teeth\n" +
       "- [x] \n" +
       "- [] ~~Eat candy~~";
@@ -135,7 +139,9 @@ describe("Completing a task", () => {
 
 function test(theories: Array<Array<string>>) {
   for (const [input, expected] of theories) {
-    it(`${JSON.stringify(input).padEnd(25, " ")} -> ${JSON.stringify(expected)}`, () => {
+    it(`${JSON.stringify(input).padEnd(25, " ")} -> ${JSON.stringify(
+      expected
+    )}`, () => {
       expect(todoer.toggleComplete(input)).to.be.equal(expected);
     });
   }

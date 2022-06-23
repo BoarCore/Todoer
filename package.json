@@ -11,6 +11,7 @@
   ],
   "activationEvents": [
     "onCommand:todoer.toggleTask",
+    "onCommand:todoer.toggleCancel",
     "onCommand:todoer.toggleDone"
   ],
   "main": "./out/src/extension.js",
@@ -22,6 +23,11 @@
         "category": "Todoer"
       },
       {
+        "command": "todoer.toggleCancel",
+        "title": "Toggle Cancel",
+        "category": "Todoer"
+      },
+      {
         "command": "todoer.toggleDone",
         "title": "Toggle Done",
         "category": "Todoer"
@@ -29,12 +35,16 @@
     ],
     "keybindings": [
       {
-        "command": "todoer.toggleTask",           "when": "editorTextFocus",
-        "key": "alt+c",                           "mac": "alt+c"
+        "command": "todoer.toggleTask",
+        "when": "editorTextFocus",
+        "key": "alt+c",
+        "mac": "alt+c"
       },
       {
-        "command": "todoer.toggleDone",           "when": "editorTextFocus",
-        "key": "alt+d",                           "mac": "alt+d"
+        "command": "todoer.toggleDone",
+        "when": "editorTextFocus",
+        "key": "alt+d",
+        "mac": "alt+d"
       }
     ]
   },
@@ -43,7 +53,6 @@
     "fmt": "prettier --write src/ test/",
     "clean": "rm -rf out/",
     "lint": "eslint --ext ts src/ test/",
-
     "compile": "tsc",
     "test": "npm run compile && npm run test:unit && npm run test:acceptance",
     "test:unit": "mocha out/test/unit/**/*.js",
