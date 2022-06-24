@@ -31,9 +31,18 @@ export function activate(context: vscode.ExtensionContext) {
 
   // 	logger.info({ level: 'info', message: "Congrats, todoer is active!" })
 
-  const toggleTaskCmd = vscode.commands.registerCommand("todoer.toggleTask", createCommand(todoer.toggleTask));
-  const toggleDoneCmd = vscode.commands.registerCommand("todoer.toggleDone", createCommand(todoer.toggleComplete));
-  const toggleCancelCmd = vscode.commands.registerCommand("todoer.toggleCancel", createCommand(todoer.toggleCancel));
+  const toggleTaskCmd = vscode.commands.registerCommand(
+    "todoer.toggleTask",
+    createCommand(todoer.toggleTask)
+  );
+  const toggleDoneCmd = vscode.commands.registerCommand(
+    "todoer.toggleDone",
+    createCommand(todoer.toggleComplete)
+  );
+  const toggleCancelCmd = vscode.commands.registerCommand(
+    "todoer.toggleCancel",
+    createCommand(todoer.toggleCancel)
+  );
 
   context.subscriptions.push(toggleTaskCmd);
   context.subscriptions.push(toggleDoneCmd);
