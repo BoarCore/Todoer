@@ -62,6 +62,13 @@ All features should keep in the mind flexibility with settings(i.e. ) and compat
 - All shortcuts should be adjustable by the end user via settings
 - Don't adjust frontmatter unless explicitly stated. Never touch frontmatter id.
 
+When you clone the repo, configure your githooks path so that conventional hooks are enforced.
+
+```bash
+chmod +x .githooks/commit-msg
+git config core.hooksPath .githooks
+```
+
 ## Release Notes
 
 See [Changelog](./CHANGELOG.md)
